@@ -1,7 +1,7 @@
 import mqtt from "mqtt";
 
 // === MQTT Connection Configuration ===
-const client = mqtt.connect("ws://localhost:9001", {
+const client = mqtt.connect("ws://10.108.72.253:9001", {
   username: "WebMonitor",
   password: "WebMonitor",
 });
@@ -22,7 +22,7 @@ export interface VehicleData {
   engineCoolantTemp: number;
   airIntakeTemp: number;
   steeringAngle: number;
-  timestamp_sent: number;
+  timeStamp_sent: number;
 }
 
 let latestData: VehicleData;
@@ -77,9 +77,9 @@ client.on("message", (topic, message) => {
       const data = JSON.parse(msgStr) as VehicleData;
 
       // 📊 HITUNG LATENCY E2E
-      if (data.timestamp_sent) {
+      if (data.timeStamp_sent) {
         const now = Date.now();
-        const latency = now - data.timestamp_sent; // Hasil dalam milidetik (ms)
+        const latency = Date.now() - data.timeStamp_sent + 3000; // Hasil dalam milidetik (ms)
 
         // Simpan sampel untuk statistik
         latencySamples.push(latency);
@@ -89,12 +89,14 @@ client.on("message", (topic, message) => {
         };
 
         // Log ke console untuk melihat pergerakan real-time
+        console.log(`📶 now: ${Date.now()}`);
+        console.log(`📤 sent: ${data.timeStamp_sent}`);
         console.log(`⏱️ E2E Latency: ${latency}ms`);
       }
 
       latestData = { ...latestData, ...data };
       dataCallbacks.forEach((cb) => cb(latestData));
-      console.log("📨 Vehicle Data:", latestData);
+      // console.log("📨 Vehicle Data:", latestData);
     } catch (err) {
       console.error("❌ Failed to parse vehicle data:", err);
       console.log("Raw message:", msgStr);
@@ -171,31 +173,49 @@ export function downloadLatencyCSV() {
 let fileHandle: any = null;
 
 export async function saveLatencyToLocalSystem() {
+  // Cegah eksekusi jika di sisi server (Node.js)
+  if (typeof window === "undefined") return;
+
   if (latencySamples.length === 0) return;
 
   try {
-    // 1. Minta izin akses file jika belum ada (Hanya muncul sekali)
+    // Memastikan API didukung oleh browser (Chrome/Edge/Opera)
+    if (!("showSaveFilePicker" in window)) {
+      console.warn(
+        "Browser tidak mendukung File System Access API. Menggunakan fallback download."
+      );
+      downloadLatencyCSV();
+      return;
+    }
+
+    // 1. Minta izin akses file jika belum ada
     if (!fileHandle) {
       fileHandle = await (window as any).showSaveFilePicker({
         suggestedName: `latency_report_${Date.now()}.csv`,
-        types: [{
-          description: 'CSV File',
-          accept: { 'text/csv': ['.csv'] },
-        }],
+        types: [
+          {
+            description: "CSV File",
+            accept: { "text/csv": [".csv"] },
+          },
+        ],
       });
     }
 
     // 2. Buat konten CSV
-    const csvContent = "Timestamp,Latency_ms\n" + 
-      latencySamples.map((val) => `${new Date().toISOString()},${val}`).join("\n");
+    const csvContent =
+      "Timestamp,Latency_ms\n" +
+      latencySamples
+        .map((val) => `${new Date().toISOString()},${val}`)
+        .join("\n");
 
-    // 3. Tulis data ke file di sistem lokal
+    // 3. Tulis data ke file
     const writable = await fileHandle.createWritable();
     await writable.write(csvContent);
     await writable.close();
 
     console.log("✅ File Latensi berhasil diperbarui di sistem lokal.");
   } catch (err) {
+    // Tangani jika user membatalkan (AbortError)
     console.error("❌ Gagal menyimpan ke sistem: ", err);
   }
 }
