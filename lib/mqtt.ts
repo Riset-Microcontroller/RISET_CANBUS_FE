@@ -47,7 +47,7 @@ client.on("connect", () => {
 client.on("message", (topic, message) => {
   const msgStr = message.toString();
 
-  // 🧩 1️⃣ Handle handshake ping from ESP
+  // Handle handshake ping from ESP
   if (topic === TOPIC_FE_REQ) {
     try {
       const payload = JSON.parse(msgStr);
@@ -67,7 +67,7 @@ client.on("message", (topic, message) => {
     return;
   }
 
-  // 🧩 2️⃣ Handle telemetry data from ESP
+  // Handle telemetry data from ESP
   if (topic === TOPIC_VEHICLE) {
     try {
       const data = JSON.parse(msgStr) as VehicleData;
@@ -86,7 +86,7 @@ client.on("error", (err) => {
   console.error("❌ MQTT Connection error:", err);
 });
 
-// === 3️⃣ Heartbeat monitor (detect when ESP goes silent) ===
+// === Heartbeat monitor (detect when ESP goes silent) ===
 setInterval(() => {
   if (isEspOnline && Date.now() - lastPing > 10000) {
     // No ping for 10 seconds -> mark ESP offline
