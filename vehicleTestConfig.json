@@ -1,0 +1,64 @@
+{
+    "configName": "Honda BR-V 2017 - Performance View",
+    "regNumber": "B1234XYZ",
+    "vehicleMetadata": {
+        "make": "Honda",
+        "model": "BR-V",
+        "year": 2017,
+        "version": "1.0.0"
+    },
+    "displaySettings": {
+        "fields": [
+            {
+                "key": "rpm",
+                "label": "RPM",
+                "unit": "RPM",
+                "max": 5000,
+                "color": "#000000"
+            },
+            {
+                "key": "speed",
+                "label": "Speed",
+                "unit": "km/h",
+                "max": 220
+            },
+            {
+                "key": "throttle",
+                "label": "Throttle",
+                "unit": "%",
+                "color": "#00A551"
+            },
+            {
+                "key": "brake",
+                "label": "Brake",
+                "unit": "%",
+                "color": "#EF1A2D"
+            },
+            {
+                "key": "gear",
+                "label": "Gear",
+                "unit": "Pos"
+            },
+            {
+                "key": "odoMeter",
+                "label": "Odometer",
+                "unit": "km"
+            },
+            {
+                "key": "engineCoolantTemp",
+                "label": "Engine Coolant Temp",
+                "unit": "°C"
+            },
+            {
+                "key": "airIntakeTemp",
+                "label": "Intake Temp",
+                "unit": "°C"
+            },
+            {
+                "key": "steeringAngle",
+                "label": "Steering Angle",
+                "unit": "°"
+            }
+        ]
+    }
+}

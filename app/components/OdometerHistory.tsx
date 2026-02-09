@@ -40,7 +40,7 @@ export default function OdometerHistory({ vehicleId }: { vehicleId: string }) {
         <div className="">
             <h2 className="text-2xl font-extrabold text-black mb-4">Odometer History</h2>
 
-            <div className="flex gap-3 mb-4">
+            <div className="flex flex-wrap gap-3 mb-4">
                 {TIME_RANGES.map((r) => (
                     <button
                         key={r}

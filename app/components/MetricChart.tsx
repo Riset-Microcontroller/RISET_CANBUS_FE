@@ -14,8 +14,6 @@ const ranges = [
     { label: "30s", value: 30 },
     { label: "60s", value: 60 },
     { label: "10m", value: 600 },
-    { label: "30m", value: 1800 },
-    { label: "1h", value: 3600 },
 ];
 
 export default function MetricChart({ metric }: { metric: TelemetryKey }) {

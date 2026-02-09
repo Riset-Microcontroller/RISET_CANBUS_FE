@@ -4,6 +4,7 @@ interface HorizontalBarProps {
     name: string;
     segments?: number;
     onClick?: () => void;
+    units?: string;
 }
 
 export default function HorizontalBar({
@@ -12,6 +13,7 @@ export default function HorizontalBar({
     name,
     segments = 15,
     onClick,
+    units,
 }: HorizontalBarProps) {
 
     const activeCount = Math.round((value / max) * segments);
@@ -55,7 +57,7 @@ export default function HorizontalBar({
                 })}
             </div>
 
-            <p className="text-3xl text-center font-bold mt-2">{value} RPM</p>
+            <p className="md:text-3xl text-xl text-center font-bold mt-2">{value} {units}</p>
         </div>
     );
 }

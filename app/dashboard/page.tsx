@@ -9,6 +9,7 @@ import HorizontalBar from "../components/HorizontalBar";
 import { isTelemetryKey, pushTelemetry, TelemetryKey } from "@/lib/telemetryBuffer";
 import MetricChart from "../components/MetricChart";
 import OdometerHistory from "../components/OdometerHistory";
+import GeneralHorizontalBar from "../components/GeneralHorizontalBar";
 
 export default function Dashboard() {
     const [data, setData] = useState({
@@ -30,7 +31,6 @@ export default function Dashboard() {
             ...initialData
         }));
 
-        // Subscribe to real-time updates
         const unsubscribe = subscribeToData((mqttData) => {
             setData(prevData => ({
                 ...prevData,
@@ -79,16 +79,22 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-[#e6e6e6]">
             <div className="flex justify-center p-10 w-full h-[60%] flex-wrap font-7segment">
-                <h1 className="text-5xl font-extrabold mb-8 w-full text-center font-7segment text-black">HONDA BR-V (2017)</h1>
-                <div className="w-full h-full flex justify-center gap-6">
-                    <VerticalBar name="Throttle" value={data.throttle} color="#00A551" width={80} onClick={() => handleMetricClick("throttle")} />
+                <h1 className="md:text-5xl text-2xl font-extrabold md:mb-8 mb-2 w-full text-center font-7segment text-black">HONDA BR-V (2017)</h1>
+                <div className="w-full h-full flex flex-wrap md:flex-nowrap justify-center gap-6">
+                    <div className="hidden md:flex">
+                        <VerticalBar name="Throttle" value={data.throttle} color="#00A551" width={80} onClick={() => handleMetricClick("throttle")} />
+                    </div>
 
                     <div className="w-full flex justify-center flex-wrap gap-6 ">
                         <div className="w-full flex justify-center">
-                            <HorizontalBar name="RPM" max={5000} value={data.rpm} onClick={() => handleMetricClick("rpm")} />
+                            <HorizontalBar name="RPM" max={5000} value={data.rpm} onClick={() => handleMetricClick("rpm")} units="RPM" />
+                        </div>
+                        <div className="flex flex-wrap w-full md:hidden gap-1">
+                            <GeneralHorizontalBar name="Throttle" value={data.throttle} color="#00A551" height={40} onClick={() => handleMetricClick("throttle")} />
+                            <GeneralHorizontalBar name="Brake" value={data.brake} color="#EF1A2D" height={40} onClick={() => handleMetricClick("brake")} />
                         </div>
 
-                        <div className="flex justify-center flex-wrap gap-6 w-full">
+                        <div className="flex justify-center flex-wrap gap-1 md:gap-6 w-full m-2">
                             <ParameterCard name="Odometer" value={data.odoMeter} unit="km" onClick={() => handleMetricClick("odoMeter")} />
                             <ParameterCard name="Speed" value={data.speed} unit="km/h" onClick={() => handleMetricClick("speed")} />
                             <ParameterCard name="Gear" value={getGearLabel(data.gear)} onClick={() => handleMetricClick("gear")} />
@@ -96,13 +102,14 @@ export default function Dashboard() {
 
                             <ParameterCard name="Engine Coolant Temp" value={data.engineCoolantTemp} unit="°C" onClick={() => handleMetricClick("engineCoolantTemp")} />
                             <ParameterCard name="Intake Temp" value={data.airIntakeTemp} unit="°C" onClick={() => handleMetricClick("airIntakeTemp")} />
-                            <ParameterCard name="Steering Angle" value={data.steeringAngle} unit="units" onClick={() => handleMetricClick("steeringAngle")} />
+                            {/* <ParameterCard name="Steering Angle" value={data.steeringAngle} unit="units" onClick={() => handleMetricClick("steeringAngle")} /> */}
                         </div>
                     </div>
-
-                    <VerticalBar name="Brake" value={data.brake} color="#EF1A2D" width={80} onClick={() => handleMetricClick("brake")} />
+                    <div className="hidden md:flex">
+                        <VerticalBar name="Brake" value={data.brake} color="#EF1A2D" width={80} onClick={() => handleMetricClick("brake")} />
+                    </div>
                 </div>
-                
+
                 {selectedMetric && (
                     <div className="w-full mt-10 bg-white p-6 rounded-xl shadow-xl">
                         {selectedMetric === "odoMeter" ? (

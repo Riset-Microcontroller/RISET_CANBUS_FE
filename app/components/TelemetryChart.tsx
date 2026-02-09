@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import {
@@ -49,8 +51,9 @@ export default function TelemetryChart({ data, metric }: TelemetryChartProps) {
                 borderColor: '#00ff66',
                 backgroundColor: 'rgba(0, 255, 102, 0.1)',
                 pointRadius: 0,
-                pointHitRadius: 2,
+                pointHitRadius: 10, // Increased for easier finger tapping
                 tension: 0.2,
+                fill: true,
             },
         ],
     };
@@ -72,37 +75,65 @@ export default function TelemetryChart({ data, metric }: TelemetryChartProps) {
                         minute: 'HH:mm',
                     },
                 },
-                ticks: { color: '#000' },
-                title: { display: true, text: 'Time (Live)', color: '#000' },
-                grid: { color: 'rgba(0, 0, 0, 0.2)' }
+                ticks: { 
+                    color: '#000',
+                    maxRotation: 0, // Keep labels horizontal for readability
+                    autoSkip: true,
+                    maxTicksLimit: 5, // Prevents crowding on mobile
+                    font: {
+                        size: 10, // Slightly smaller for mobile
+                    }
+                },
+                title: { 
+                    display: true, 
+                    text: 'Time (Live)', 
+                    color: '#000',
+                    font: { weight: 'bold' as const } 
+                },
+                grid: { color: 'rgba(0, 0, 0, 0.1)' }
             },
             y: {
-                ticks: { color: '#000' },
-                title: { display: true, text: metric.toUpperCase(), color: '#000' },
-                grid: { color: 'rgba(0, 0, 0, 0.2)' },
+                ticks: { 
+                    color: '#000',
+                    font: { size: 10 }
+                },
+                title: { 
+                    display: true, 
+                    text: metric.toUpperCase(), 
+                    color: '#000',
+                    font: { weight: 'bold' as const }
+                },
+                grid: { color: 'rgba(0, 0, 0, 0.1)' },
                 beginAtZero: true,
             },
         },
         plugins: {
             legend: { display: false },
-            title: { display: false, text: `${metric.toUpperCase()} History`, color: '#000' }
+            tooltip: {
+                enabled: true,
+                mode: 'index' as const,
+                intersect: false,
+            }
         }
     };
 
     return (
-        <div className="w-full h-[300px] bg-[#e6e6e6] p-4 rounded-xl shadow-md text-black relative"
+        /* Increased height on mobile (h-[350px]) vs desktop (md:h-[400px]) */
+        <div className="w-full h-[250px] md:h-[400px] bg-[#e6e6e6] p-2 md:p-4 rounded-xl shadow-md text-black relative"
             style={{
-                boxShadow:
-                    "inset 0 0 10px #969696, 0 0 10px rgba(255,255,255,0.2)",
+                boxShadow: "inset 0 0 10px #969696, 0 0 10px rgba(255,255,255,0.2)",
             }}>
-            <div className="absolute inset-0 opacity-20 pointer-events-none"
+            {/* Grid Overlay */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none"
                 style={{
-                    backgroundSize: "10px 10px",
+                    backgroundSize: "20px 20px",
                     backgroundImage:
-                        "linear-gradient(#00000020 1px, transparent 1px), linear-gradient(90deg, #00000020 1px, transparent 1px)",
+                        "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
                 }}
             />
-            <Line data={chartDataObject} options={options} />
+            <div className="relative w-full h-full">
+                <Line data={chartDataObject} options={options} />
+            </div>
         </div>
     );
 }

@@ -4,7 +4,6 @@ interface ParameterCardProps {
     name: string;
     value: number | string;
     unit?: string;
-    color?: string; // ignored for LCD mode
     onClick?: () => void;
 }
 
@@ -18,20 +17,10 @@ export default function ParameterCard({
     const cardContent = (
         <div
             onClick={onClick}>
-            <div className="bg-white p-2 rounded-2xl shadow-md hover:shadow-xl transition-all cursor-pointer w-96">
+            <div className="bg-white p-2 rounded-2xl shadow-md hover:shadow-xl transition-all cursor-pointer min-w-64 md:w-96">
 
                 <div
-                    className="
-                        bg-[#ebebeb]
-                        text-[#000000]
-                        rounded-md 
-                        p-4 
-                        shadow-inner 
-                        border-2 border-white
-                        tracking-wider 
-                        font-7segment
-                        relative
-                    "
+                    className="bg-[#ebebeb] text-[#000000] rounded-md p-4 shadow-inner border-2 border-white tracking-wider font-7segment relative"
                     style={{
                         boxShadow:
                             "inset 0 0 10px #969696, 0 0 10px rgba(255,255,255,0.2)",
