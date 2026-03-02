@@ -79,7 +79,7 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-[#e6e6e6]">
             <div className="flex justify-center p-10 w-full h-[60%] flex-wrap font-7segment">
-                <h1 className="md:text-5xl text-2xl font-extrabold md:mb-8 mb-2 w-full text-center font-7segment text-black">HONDA BR-V (2017)</h1>
+                <h1 className="md:text-5xl text-2xl font-extrabold md:mb-8 mb-2 w-full text-center font-7segment text-black">MOBIL HAFIZ</h1>
                 <div className="w-full h-full flex flex-wrap md:flex-nowrap justify-center gap-6">
                     <div className="hidden md:flex">
                         <VerticalBar name="Throttle" value={data.throttle} color="#00A551" width={80} onClick={() => handleMetricClick("throttle")} />
